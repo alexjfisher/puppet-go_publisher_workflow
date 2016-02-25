@@ -1,0 +1,24 @@
+{
+  "name": "ordnancesurvey-go_publisher_workflow",
+  "version": "0.1.0",
+  "author": "Ordnance Survey",
+  "summary": "Go Publisher Workflow",
+  "license": "Apache-2.0",
+  "source": "",
+  "project_page": "",
+  "issues_url": "",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 4.8.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "6"
+      ]
+    }
+  ]
+}
