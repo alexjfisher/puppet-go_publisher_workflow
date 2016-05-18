@@ -35,12 +35,7 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
 
   def self.get_instance_urls
     url = 'http://localhost:7003/go-publisher-workflow-product-admin/products' # TODO MAKE THIS CONFIGURABLE??
-    begin
-      response = RestClient.get(url, {:accept => :json} )
-    rescue Exception => e
-      Puppet.debug "RestClient.get #{url} had an error -> #{e.inspect}"
-      return []
-    end
+    response = RestClient.get(url, {:accept => :json} )
     JSON.parse(response)['PublishProducts']['publishProduct'].collect do |product|
       product['href']
     end
@@ -83,7 +78,7 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
   end
 
   def validate_all
-    fail "source is required when creating new resource file" unless has_source?
+    fail "source is required when creating new gpw_product"    unless has_source?
     fail "name does not match gpa:name element in product.xml" unless product_name_matches?
   end
 
@@ -93,7 +88,7 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
   end
 
   def product_name_matches?
-    product_xml = unzip(['-p',resource[:source], 'product.xml'])
+    product_xml = unzip('-p', resource[:source], 'product.xml')
     doc = Document.new(product_xml)
     product_name_in_zip = XPath.first(doc, '//gpa:name')[0]
     resource[:name] == product_name_in_zip.to_s

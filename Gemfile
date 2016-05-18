@@ -4,7 +4,7 @@ group :test do
   gem "rake"
   gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 3.8.0'
   gem "rspec", '< 3.2.0'
-  gem "rspec-puppet", :git => 'https://github.com/rodjek/rspec-puppet.git'
+  gem "rspec-puppet", '2.4.0'
   gem "puppetlabs_spec_helper"
   gem "metadata-json-lint"
   gem "rspec-puppet-facts"
@@ -19,6 +19,11 @@ group :test do
   gem "puppet-lint-classes_and_types_beginning_with_digits-check"
   gem "puppet-lint-unquoted_string-check"
   gem 'puppet-lint-resource_reference_syntax'
+
+  gem "rest-client"
+  gem "webmock"
+  gem "mocha"
+  gem "fakefs"
 end
 
 group :development do
