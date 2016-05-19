@@ -46,6 +46,7 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
     product_properties[:ensure] = :present
     product_properties[:provider] = :rest_client
     product_properties[:name] = product['name']
+    product_properties[:publisher_project_url] = product['publisherProject']['href'] unless product['publisherProject'].nil?
     product_properties
   end
 
@@ -92,5 +93,11 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
     doc = Document.new(product_xml)
     product_name_in_zip = XPath.first(doc, '//gpa:name')[0]
     resource[:name] == product_name_in_zip.to_s
+  end
+  
+  def project_xml
+    url = @property_hash[:publisher_project_url]
+    response = RestClient.get(url, {:accept => :json} )
+    JSON.parse(response)['String']
   end
 end

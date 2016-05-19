@@ -49,7 +49,8 @@ describe provider_class do
           expect(described_class.instances[0].instance_variable_get("@property_hash")).to eq( {
             :ensure   => :present,
             :name     => 'test',
-            :provider => :rest_client
+            :provider => :rest_client,
+            :publisher_project_url => "http://localhost:7003/go-publisher-workflow-product-admin/products/test/projects/test.gpp"
           } )
         end
       end
@@ -113,6 +114,15 @@ describe provider_class do
           end
           expect(provider.read_source).to eq mock_data
         end
+      end
+    end
+    describe '#project_xml' do
+      it 'should return the products project xml string' do
+        provider.instance_variable_set(:@property_hash,{:publisher_project_url => 'http://example.com/product.gpp'})
+        stub_request(:get, "http://example.com/product.gpp")
+          .with(:headers => {'Accept'=>'application/json'})
+          .to_return(:status => 200, :body => '{"String" : "the xml string"}')
+        expect(provider.project_xml).to eq 'the xml string'
       end
     end
     context 'is being created' do

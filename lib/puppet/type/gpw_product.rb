@@ -1,7 +1,35 @@
 Puppet::Type.newtype(:gpw_product) do
   desc "Puppet type that manages Go Publisher Workflow products"
 
-  ensurable
+  ensurable do
+    defaultvalues  
+    newvalue(:present) do
+      provider.destroy if provider.exists?
+      provider.create
+    end
+
+    def insync?(is)
+      return false if is == :present and !project_files_match?
+      super
+    end
+
+    def change_to_s(currentvalue, newvalue)
+      return "updated" if updated?(currentvalue, newvalue)
+      super
+    end
+
+    def updated?(currentvalue, newvalue)
+      currentvalue == :present and newvalue == :present
+    end
+
+    def project_files_match?
+      project_xml == provider.project_xml
+    end
+
+    def project_xml
+      `unzip -p #{@resource.original_parameters[:source]} projects/*.gpp`
+    end
+  end
 
   newparam(:name, :namevar => true) do
     desc "Name of the product"
