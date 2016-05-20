@@ -27,7 +27,9 @@ Puppet::Type.newtype(:gpw_product) do
     end
 
     def project_xml
-      `unzip -p #{@resource.original_parameters[:source]} projects/*.gpp`
+      unzip_command = "unzip -p #{resource[:source]} projects/#{resource[:name]}.gpp"
+      Puppet.debug("project_xml: running #{unzip_command}")
+      `#{unzip_command}`
     end
   end
 

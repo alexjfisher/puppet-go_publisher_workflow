@@ -101,9 +101,8 @@ describe Puppet::Type.type(:gpw_product) do
       end
       describe '.project_xml' do
         it 'returns the output from the `unzip` command' do
-          @resource.expects(:original_parameters).returns({:source => '/path/to.zip'})
           Puppet::Type::Gpw_product::Ensure.any_instance.expects(:`)
-            .with('unzip -p /path/to.zip projects/*.gpp')
+            .with('unzip -p /path/to.zip projects/test.gpp')
             .returns('some output')
           expect(@property.project_xml).to eq 'some output'
         end
