@@ -9,7 +9,7 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
 
   mk_resource_methods
 
-  def initialize(value={})
+  def initialize(value = {})
     super(value)
   end
 
@@ -29,13 +29,13 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
   end
 
   def self.get_product_json(url)
-    response = RestClient.get(url, {:accept => :json} )
+    response = RestClient.get(url, :accept => :json)
     JSON.parse(response)['PublishProduct']
   end
 
   def self.get_instance_urls
-    url = 'http://localhost:7003/go-publisher-workflow-product-admin/products' # TODO MAKE THIS CONFIGURABLE??
-    response = RestClient.get(url, {:accept => :json} )
+    url = 'http://localhost:7003/go-publisher-workflow-product-admin/products' # TODO: MAKE THIS CONFIGURABLE??
+    response = RestClient.get(url, :accept => :json)
     JSON.parse(response)['PublishProducts']['publishProduct'].collect do |product|
       product['href']
     end
@@ -63,10 +63,10 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
   def create
     validate_all
     url = 'http://localhost:7003/go-publisher-workflow-product-admin/products'
-    RestClient.post(url, read_source, { :content_type => 'application/zip', :accept => :json }) do |response, request, result, &block|
+    RestClient.post(url, read_source, :content_type => 'application/zip', :accept => :json) do |response, request, result, &block|
       case response.code
       when 201
-        @property_hash = self.class.get_product_properties({:name => resource[:name]})
+        @property_hash = self.class.get_product_properties(:name => resource[:name])
       else
         fail "Go Publisher API returned #{response.code} when uploading #{resource[:name]}. #{JSON.parse(response)}"
       end
@@ -79,8 +79,8 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
   end
 
   def validate_all
-    fail "source is required when creating new gpw_product"    unless has_source?
-    fail "name does not match gpa:name element in product.xml" unless product_name_matches?
+    fail 'source is required when creating new gpw_product'    unless has_source?
+    fail 'name does not match gpa:name element in product.xml' unless product_name_matches?
   end
 
   def has_source?
@@ -94,10 +94,10 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
     product_name_in_zip = XPath.first(doc, '//gpa:name')[0]
     resource[:name] == product_name_in_zip.to_s
   end
-  
+
   def project_xml
     url = @property_hash[:publisher_project_url]
-    response = RestClient.get(url, {:accept => :json} )
+    response = RestClient.get(url, :accept => :json)
     JSON.parse(response)['String']
   end
 end

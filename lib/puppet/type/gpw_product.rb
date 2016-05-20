@@ -1,8 +1,8 @@
 Puppet::Type.newtype(:gpw_product) do
-  desc "Puppet type that manages Go Publisher Workflow products"
+  desc 'Puppet type that manages Go Publisher Workflow products'
 
   ensurable do
-    defaultvalues  
+    defaultvalues
     newvalue(:present) do
       provider.destroy if provider.exists?
       provider.create
@@ -14,12 +14,12 @@ Puppet::Type.newtype(:gpw_product) do
     end
 
     def change_to_s(currentvalue, newvalue)
-      return "updated" if updated?(currentvalue, newvalue)
+      return 'updated' if updated?(currentvalue, newvalue)
       super
     end
 
     def updated?(currentvalue, newvalue)
-      currentvalue == :present and newvalue == :present
+      currentvalue == :present && newvalue == :present
     end
 
     def project_files_match?
@@ -34,11 +34,11 @@ Puppet::Type.newtype(:gpw_product) do
   end
 
   newparam(:name, :namevar => true) do
-    desc "Name of the product"
+    desc 'Name of the product'
   end
 
   newparam(:source) do
-    desc "The file to upload.  Must be the absolute path to a file."
+    desc 'The file to upload.  Must be the absolute path to a file.'
     validate do |value|
       fail "'source' file path must be absolute, not '#{value}'" unless Puppet::Util.absolute_path?(value)
     end
