@@ -4,9 +4,9 @@
   "author": "Ordnance Survey",
   "summary": "Go Publisher Workflow",
   "license": "Apache-2.0",
-  "source": "",
-  "project_page": "",
-  "issues_url": "",
+  "source": "https://github.com/OrdnanceSurvey/puppet-go_publisher_workflow.git",
+  "project_page": "https://github.com/OrdnanceSurvey/puppet-go_publisher_workflow",
+  "issues_url": "https://github.com/OrdnanceSurvey/puppet-go_publisher_workflow/issues",
   "dependencies": [],
   "operatingsystem_support": [
     {
