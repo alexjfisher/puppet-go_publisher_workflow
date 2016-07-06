@@ -2,11 +2,16 @@ Puppet::Type.newtype(:gpw_product) do
   desc 'Puppet type that manages Go Publisher Workflow products'
 
   ensurable do
-    defaultvalues
     newvalue(:present) do
       provider.destroy if provider.exists?
       provider.create
     end
+
+    newvalue(:absent) do
+      provider.destroy
+    end
+
+    defaultto(:present)
 
     def insync?(is)
       return false if is == :present and !project_files_match?
