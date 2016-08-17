@@ -173,6 +173,22 @@ describe provider_class do
     end
     context 'is being destroyed' do
       before :each do
+        stub_request(:get, 'http://localhost:7003/go-publisher-workflow/api/jobs')
+          .with(:headers => { 'Accept' => 'application/json' })
+          .to_return(:status => 200, :body => '{"PublishJobs":{"publishJob":[{"href":"http://localhost:7003/go-publisher-workflow/api/jobs/5"}]}}')
+        stub_request(:get, 'http://localhost:7003/go-publisher-workflow/api/jobs/5')
+          .with(:headers => { 'Accept' => 'application/json' })
+          .to_return(:status => 200, :body => '{
+            "PublishJob":{
+              "jobName":"TestJob01",
+              "status":{"value":"NEW"},
+              "product":{"ref":"TestProduct"},
+              "compressFiles":false,
+              "generateArchive":true,
+              "downloadEmptyFiles":true
+            }}')
+        stub_request(:delete, 'http://localhost:7003/go-publisher-workflow/api/jobs/5')
+          .to_return(:status => 200)
         stub_request(:delete, 'http://localhost:7003/go-publisher-workflow-product-admin/products/test')
           .to_return(:status => 200)
       end

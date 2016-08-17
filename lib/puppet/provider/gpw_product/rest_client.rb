@@ -55,9 +55,43 @@ Puppet::Type.type(:gpw_product).provide(:rest_client) do
   end
 
   def destroy
-    url = "http://localhost:7003/go-publisher-workflow-product-admin/products/#{resource[:name]}"
-    RestClient.delete(url)
+    delete_all_product_jobs
+    delete_product
     @property_hash.clear
+  end
+
+  def delete_all_product_jobs
+    all_job_urls.each do |url|
+      if product_associated_with_job(url) == resource[:name]
+        Puppet.debug "#{resource[:name]} has job at #{url}. Deleting."
+        delete_job(url)
+      else
+        Puppet.debug "#{url} is not associated with #{resource[:name]}. Not deleting"
+      end
+    end
+  end
+
+  def all_job_urls
+    url = 'http://localhost:7003/go-publisher-workflow/api/jobs'
+    response = RestClient.get(url, :accept => :json)
+    JSON.parse(response)['PublishJobs']['publishJob'].collect do |job|
+      job['href']
+    end
+  end
+
+  def product_associated_with_job(url)
+    response = RestClient.get(url, :accept => :json)
+    JSON.parse(response)['PublishJob']['product']['ref']
+  end
+
+  def delete_job(url)
+    Puppet.debug "Deleting job at #{url}"
+    RestClient.delete(url)
+  end
+
+  def delete_product
+    Puppet.debug "Deleting product #{resource[:name]}"
+    RestClient.delete("http://localhost:7003/go-publisher-workflow-product-admin/products/#{resource[:name]}")
   end
 
   def create
